@@ -1,0 +1,11 @@
+.env.example
+*.db
+*.db-journal
+node_modules/
+exports/*.xlsx
+exports/*.csv
+.DS_Store
+.vscode/
+.idea/
+npm-debug.log
+.env

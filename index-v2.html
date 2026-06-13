@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Program Manager Hub v2 — Enhanced</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #e2e8f0; line-height: 1.6; }
+    .container { max-width: 1600px; margin: 0 auto; padding: 20px; }
+    header { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #1e293b; }
+    h1 { font-size: 2.8em; margin-bottom: 5px; background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .subtitle { color: #94a3b8; font-size: 1.1em; }
+    .top-actions { display: flex; gap: 15px; margin-top: 20px; }
+    button { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 0.95em; font-weight: bold; transition: all 0.3s; }
+    button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
+    button.secondary { background: #475569; }
+    button.secondary:hover { background: #64748b; }
+    .insights { background: linear-gradient(135deg, #1e293b, #0f172a); border-left: 4px solid #8b5cf6; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+    .insights h3 { color: #60a5fa; margin-bottom: 15px; }
+    .insight-item { background: rgba(139, 92, 246, 0.1); padding: 12px; margin-bottom: 10px; border-radius: 6px; border-left: 3px solid #8b5cf6; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+    .metric-card { background: #1e293b; border: 2px solid #334155; padding: 20px; border-radius: 8px; text-align: center; transition: all 0.3s; }
+    .metric-card:hover { border-color: #3b82f6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
+    .metric-card .number { font-size: 2.5em; color: #3b82f6; font-weight: bold; margin-bottom: 8px; }
+    .metric-card .label { color: #94a3b8; font-size: 0.95em; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin-bottom: 30px; }
+    @media (max-width: 1200px) { .grid-2 { grid-template-columns: 1fr; } }
+    .panel { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 25px; }
+    .panel h2 { color: #60a5fa; margin-bottom: 20px; font-size: 1.4em; display: flex; align-items: center; gap: 10px; }
+    .team-item { background: #0f172a; padding: 18px; margin-bottom: 15px; border-radius: 8px; border-left: 5px solid #3b82f6; transition: all 0.3s; }
+    .team-item:hover { transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    .team-item.at-risk { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+    .team-item .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .team-item .name { font-weight: bold; font-size: 1.1em; }
+    .team-item .task { font-size: 0.9em; color: #cbd5e1; margin-bottom: 10px; }
+    .team-item .details { display: flex; gap: 20px; font-size: 0.85em; color: #94a3b8; margin-bottom: 12px; }
+    .progress { background: #334155; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+    .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); transition: width 0.3s; }
+    .status { padding: 6px 12px; border-radius: 4px; font-size: 0.85em; font-weight: bold; }
+    .status.on-track { background: linear-gradient(135deg, #10b981, #059669); color: #ecfdf5; }
+    .status.at-risk { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fef2f2; }
+    .anomaly { background: linear-gradient(135deg, #1e1b4b, #0f172a); border-left: 4px solid #ea580c; padding: 18px; margin-bottom: 15px; border-radius: 8px; transition: all 0.3s; }
+    .anomaly.high { border-left-color: #dc2626; background: linear-gradient(135deg, rgba(127, 29, 29, 0.3), rgba(15, 23, 42, 0.3)); }
+    .anomaly.med { border-left-color: #f59e0b; }
+    .anomaly .severity { display: inline-block; padding: 6px 12px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 0.85em; margin-top: 10px; font-weight: bold; }
+    .anomaly .rule { font-weight: bold; color: #fbbf24; }
+    .checkin-item { background: #0f172a; padding: 14px; margin-bottom: 10px; border-radius: 6px; border-left: 3px solid #8b5cf6; display: flex; justify-content: space-between; align-items: center; }
+    .checkin-item .info { flex: 1; }
+    .checkin-item .status { padding: 4px 8px; font-size: 0.8em; }
+    input, textarea, select { background: #0f172a; border: 1px solid #334155; color: #e2e8f0; padding: 12px; border-radius: 6px; margin-bottom: 12px; width: 100%; font-family: inherit; transition: border-color 0.3s; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 6px; color: #cbd5e1; font-weight: 500; font-size: 0.9em; }
+    .log-entry { background: #0f172a; padding: 12px; margin-bottom: 10px; border-radius: 6px; border-left: 3px solid #06b6d4; font-size: 0.9em; }
+    .log-entry.alert { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+    .export-section { background: linear-gradient(135deg, #1e3a8a, #0f172a); padding: 20px; border-radius: 8px; border: 1px solid #1e40af; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #334155; }
+    .tab { padding: 12px 20px; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s; color: #94a3b8; }
+    .tab.active { color: #60a5fa; border-bottom-color: #3b82f6; }
+    .tab:hover { color: #cbd5e1; }
+    .content-pane { display: none; }
+    .content-pane.active { display: block; }
+    .loading { display: inline-block; width: 12px; height: 12px; border: 2px solid #3b82f6; border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🚀 AI Program Manager Hub v2</h1>
+      <p class="subtitle">Real-time team tracking • Excel export • Automated email alerts • Analytics</p>
+      <div class="top-actions">
+        <button onclick="exportReport()">📊 Export Report</button>
+        <button class="secondary" onclick="refreshData()">🔄 Refresh</button>
+        <button class="secondary" onclick="toggleSettings()">⚙️ Settings</button>
+      </div>
+    </header>
+
+    <div class="insights" id="insightsPanel"></div>
+
+    <div class="metrics-grid" id="metrics"></div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('overview')">📋 Overview</div>
+      <div class="tab" onclick="switchTab('analytics')">📈 Analytics</div>
+      <div class="tab" onclick="switchTab('alerts')">🚨 Alerts</div>
+      <div class="tab" onclick="switchTab('ai')">🤖 AI Assistant</div>
+    </div>
+
+    <!-- Overview Tab -->
+    <div id="overview" class="content-pane active">
+      <div class="grid-2">
+        <div class="panel">
+          <h2>👥 Teams Status</h2>
+          <div id="teams"></div>
+        </div>
+
+        <div class="panel">
+          <h2>⚠️ Anomalies & Alerts</h2>
+          <div id="anomalies"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <h2>📅 Upcoming Check-ins</h2>
+          <div id="checkins"></div>
+        </div>
+
+        <div class="panel">
+          <h2>💬 Discord Joins</h2>
+          <div id="discord"></div>
+          <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #334155;">
+            <h3 style="color: #60a5fa; margin-bottom: 15px; font-size: 0.95em;">Add New Member</h3>
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" id="newMemberName" placeholder="John Doe">
+            </div>
+            <div class="form-group">
+              <label>Skills</label>
+              <input type="text" id="newMemberSkills" placeholder="Python, ML, NLP">
+            </div>
+            <div class="form-group">
+              <label>Interest</label>
+              <input type="text" id="newMemberInterest" placeholder="AI Ethics, Privacy">
+            </div>
+            <button onclick="matchNewMember()" style="width: 100%;">Match to Team</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Tab -->
+    <div id="analytics" class="content-pane">
+      <div class="panel">
+        <h2>📊 Team Analytics</h2>
+        <div style="margin-bottom: 20px;">
+          <label>Select Team:</label>
+          <select id="analyticsTeamSelect" onchange="loadTeamAnalytics()" style="margin-bottom: 20px;">
+            <option value="">All Teams</option>
+          </select>
+        </div>
+        <div id="analyticsContent"></div>
+      </div>
+    </div>
+
+    <!-- Alerts Tab -->
+    <div id="alerts" class="content-pane">
+      <div class="panel">
+        <h2>🚨 Live Feed</h2>
+        <div id="live" style="max-height: 500px; overflow-y: auto;"></div>
+      </div>
+    </div>
+
+    <!-- AI Assistant Tab -->
+    <div id="ai" class="content-pane">
+      <div class="panel">
+        <h2>🤖 AI Assistant</h2>
+        <div class="form-group">
+          <label>Ask me anything about team status, scheduling, or decisions...</label>
+          <textarea id="aiPrompt" placeholder="e.g., Which teams are most at risk? What should we prioritize?" rows="4" style="margin-bottom: 12px;"></textarea>
+          <button onclick="askAI()" style="width: 100%;">Get AI Insight</button>
+        </div>
+        <div id="aiResponse" style="margin-top: 20px; padding: 20px; background: #0f172a; border-radius: 8px; border: 1px solid #334155; display: none;">
+          <div style="color: #8b5cf6; font-weight: bold; margin-bottom: 10px;">🤖 AI Response:</div>
+          <div id="aiResponseText"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin;
+    let state = {};
+
+    async function fetchState() {
+      try {
+        const res = await fetch(`${API_BASE}/api/state`);
+        state = await res.json();
+        render();
+      } catch (e) { console.error('Fetch error:', e); }
+    }
+
+    function render() {
+      renderInsights();
+      renderMetrics();
+      renderTeams();
+      renderAnomalies();
+      renderCheckins();
+      renderDiscord();
+      renderAnalyticsSelector();
+    }
+
+    function renderInsights() {
+      const insights = state.insights || [];
+      if (insights.length === 0) {
+        document.getElementById('insightsPanel').style.display = 'none';
+        return;
+      }
+      document.getElementById('insightsPanel').innerHTML = `
+        <h3>💡 Key Insights</h3>
+        ${insights.map(i => `<div class="insight-item">${i}</div>`).join('')}
+      `;
+    }
+
+    function renderMetrics() {
+      const m = state.metrics || {};
+      document.getElementById('metrics').innerHTML = `
+        <div class="metric-card">
+          <div class="number">${m.total || 100}</div>
+          <div class="label">Total Developers</div>
+        </div>
+        <div class="metric-card">
+          <div class="number">${m.teams || 13}</div>
+          <div class="label">Active Teams</div>
+        </div>
+        <div class="metric-card">
+          <div class="number" style="color: #ef4444;">${m.behind || 0}</div>
+          <div class="label">At-Risk Teams</div>
+        </div>
+        <div class="metric-card">
+          <div class="number" style="color: #f59e0b;">${m.missed || 0}</div>
+          <div class="label">Missed Check-ins</div>
+        </div>
+      `;
+    }
+
+    function renderTeams() {
+      document.getElementById('teams').innerHTML = (state.teams || []).map(t => `
+        <div class="team-item ${t.status}">
+          <div class="header">
+            <div class="name">Team ${t.id}</div>
+            <span class="status ${t.status}">${t.status === 'on-track' ? '✓' : '⚠'} ${t.status}</span>
+          </div>
+          <div class="task">📌 ${t.task}</div>
+          <div class="details">
+            <span>Lead: ${t.lead}</span>
+            <span>Size: ${t.size}/6</span>
+            <span>Timeline: ${t.timeline}</span>
+          </div>
+          <div class="progress"><div class="progress-bar" style="width: ${t.prog}%"></div></div>
+          <div style="font-size: 0.85em; color: #64748b;">${t.prog}% complete${t.missedCheckins.length > 0 ? ` • ${t.missedCheckins.length} missed check-ins` : ''}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderAnomalies() {
+      document.getElementById('anomalies').innerHTML = (state.anomalies || []).map((a, i) => `
+        <div class="anomaly ${a.severity}">
+          <div class="rule">${a.rule}</div>
+          <div style="font-size: 0.9em; margin: 8px 0; color: #cbd5e1;">${a.detail}</div>
+          <div style="font-size: 0.85em; color: #94a3b8; margin: 8px 0;">
+            <strong>Team:</strong> ${a.team} | <strong>Action:</strong> ${a.action}
+          </div>
+          <div class="severity">${a.severity.toUpperCase()}${a.resolved ? ' ✓ RESOLVED' : ''}</div>
+          ${!a.resolved ? `<button onclick="resolveAnomaly(${i})" style="background: #8b5cf6; margin-top: 10px; width: 100%; padding: 8px;">Resolve</button>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function renderCheckins() {
+      document.getElementById('checkins').innerHTML = (state.checkins || []).map(c => `
+        <div class="checkin-item">
+          <div class="info">
+            <strong>${c.type}</strong> • Team ${c.team}<br>
+            <span class="confirmed" style="color: ${c.confirmed === c.expected ? '#10b981' : '#f59e0b'};">
+              ${c.confirmed}/${c.expected} confirmed
+            </span> • ${c.time}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderDiscord() {
+      document.getElementById('discord').innerHTML = (state.discordLog || []).slice(0, 5).map(d => `
+        <div class="log-entry">
+          <strong>${d.name}</strong> — ${d.skills}<br>
+          <em style="color: #94a3b8; font-size: 0.85em;">${d.recommendation.slice(0, 100)}...</em>
+        </div>
+      `).join('');
+    }
+
+    function renderAnalyticsSelector() {
+      const select = document.getElementById('analyticsTeamSelect');
+      select.innerHTML = '<option value="">All Teams</option>' + 
+        (state.teams || []).map(t => `<option value="${t.id}">Team ${t.id}</option>`).join('');
+    }
+
+    async function loadTeamAnalytics(teamId) {
+      teamId = teamId || document.getElementById('analyticsTeamSelect').value || null;
+      try {
+        if (teamId) {
+          const res = await fetch(`${API_BASE}/api/analytics/team/${teamId}`);
+          const data = await res.json();
+          const m = data.metrics;
+          document.getElementById('analyticsContent').innerHTML = `
+            <div style="background: #0f172a; padding: 20px; border-radius: 8px; border: 1px solid #334155;">
+              <h3 style="color: #60a5fa; margin-bottom: 15px;">Team ${teamId} Metrics</h3>
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                <div>
+                  <div style="color: #94a3b8; font-size: 0.9em;">Progress</div>
+                  <div style="font-size: 1.8em; font-weight: bold; color: #3b82f6;">${m.progress}%</div>
+                </div>
+                <div>
+                  <div style="color: #94a3b8; font-size: 0.9em;">Health Score</div>
+                  <div style="font-size: 1.8em; font-weight: bold; color: ${m.health.score >= 70 ? '#10b981' : m.health.score >= 40 ? '#f59e0b' : '#ef4444'};">${m.health.score}</div>
+                </div>
+                <div>
+                  <div style="color: #94a3b8; font-size: 0.9em;">Estimated Completion</div>
+                  <div style="font-size: 1.8em; font-weight: bold; color: #8b5cf6;">${m.prediction.hoursRemaining.toFixed(1)}h</div>
+                </div>
+                <div>
+                  <div style="color: #94a3b8; font-size: 0.9em;">On Track?</div>
+                  <div style="font-size: 1.8em; font-weight: bold; color: ${m.prediction.onTrack ? '#10b981' : '#ef4444'};">${m.prediction.onTrack ? '✓ Yes' : '✗ No'}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          document.getElementById('analyticsContent').innerHTML = '<p style="color: #94a3b8;">Select a team to view detailed analytics.</p>';
+        }
+      } catch (e) { console.error('Analytics error:', e); }
+    }
+
+    async function askAI() {
+      const prompt = document.getElementById('aiPrompt').value;
+      if (!prompt) return;
+      const btn = event.target;
+      btn.innerHTML = '<span class="loading"></span> Thinking...';
+      btn.disabled = true;
+      try {
+        const res = await fetch(`${API_BASE}/api/ai`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt, context: JSON.stringify(state) })
+        });
+        const { answer } = await res.json();
+        document.getElementById('aiResponseText').textContent = answer;
+        document.getElementById('aiResponse').style.display = 'block';
+      } catch (e) { alert('Error: ' + e.message); }
+      finally {
+        btn.innerHTML = 'Get AI Insight';
+        btn.disabled = false;
+      }
+    }
+
+    async function matchNewMember() {
+      const name = document.getElementById('newMemberName').value;
+      const skills = document.getElementById('newMemberSkills').value;
+      const interest = document.getElementById('newMemberInterest').value;
+      if (!name || !skills || !interest) { alert('Fill all fields'); return; }
+      try {
+        const res = await fetch(`${API_BASE}/api/discord-match`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, skills, interest })
+        });
+        const { recommendation } = await res.json();
+        alert('✅ Recommendation:\n\n' + recommendation + '\n\n(Email alert sent to PM)');
+        document.getElementById('newMemberName').value = '';
+        document.getElementById('newMemberSkills').value = '';
+        document.getElementById('newMemberInterest').value = '';
+        fetchState();
+      } catch (e) { alert('Error: ' + e.message); }
+    }
+
+    async function resolveAnomaly(idx) {
+      try {
+        await fetch(`${API_BASE}/api/anomaly/${idx}/resolve`, { method: 'PATCH' });
+        fetchState();
+      } catch (e) { alert('Error: ' + e.message); }
+    }
+
+    async function exportReport() {
+      const btn = event.target;
+      btn.innerHTML = '<span class="loading"></span> Exporting...';
+      btn.disabled = true;
+      try {
+        const res = await fetch(`${API_BASE}/api/export`);
+        const { file } = await res.json();
+        alert('✅ Report exported!\n\nFile: ' + file + '\n\n(Email alert sent)');
+      } catch (e) { alert('Error: ' + e.message); }
+      finally {
+        btn.innerHTML = '📊 Export Report';
+        btn.disabled = false;
+      }
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.content-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function refreshData() {
+      fetchState();
+    }
+
+    function toggleSettings() {
+      alert('⚙️ Settings:\n- Email alerts: Enabled\n- Excel export: Hourly\n- Database: SQLite (pm-hub.db)\n- Analytics: Real-time\n\nContact admin to modify.');
+    }
+
+    // SSE for live updates
+    function setupSSE() {
+      const es = new EventSource(`${API_BASE}/api/events`);
+      es.addEventListener('team-updated', e => {
+        const data = JSON.parse(e.data);
+        addLog(`📊 Team ${data.id} updated: ${data.status} @ ${data.prog}%`, false);
+        fetchState();
+      });
+      es.addEventListener('anomaly-resolved', e => {
+        addLog(`✅ Anomaly #${JSON.parse(e.data).idx} resolved`, false);
+        fetchState();
+      });
+      es.addEventListener('discord-join', e => {
+        const data = JSON.parse(e.data);
+        addLog(`👤 New member joined: ${data.name}`, false);
+        fetchState();
+      });
+      es.addEventListener('export-ready', e => {
+        const data = JSON.parse(e.data);
+        addLog(`📑 Excel report ready: ${data.file}`, false);
+      });
+    }
+
+    function addLog(msg, isAlert = false) {
+      const log = document.getElementById('live');
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${isAlert ? 'alert' : ''}`;
+      entry.textContent = new Date().toLocaleTimeString() + ' — ' + msg;
+      log.insertBefore(entry, log.firstChild);
+      if (log.children.length > 50) log.removeChild(log.lastChild);
+    }
+
+    fetchState();
+    setupSSE();
+    setInterval(fetchState, 30000); // Refresh every 30s
+  </script>
+</body>
+</html>
