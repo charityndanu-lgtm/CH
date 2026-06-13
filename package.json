@@ -1,0 +1,24 @@
+{
+  "name": "pm-hub",
+  "version": "1.0.0",
+  "description": "AI Program Manager Hub",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "uuid": "^9.0.0",
+    "nodemailer": "^6.9.7",
+    "exceljs": "^4.4.0",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "program-manager",
+    "ai",
+    "team-tracking"
+  ],
+  "author": "",
+  "license": "MIT"
+}
